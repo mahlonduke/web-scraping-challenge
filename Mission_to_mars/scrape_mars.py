@@ -2,15 +2,11 @@
 from splinter import Browser
 from bs4 import BeautifulSoup
 
-# Function to set up the browser path
-def init_browser():
-    # Configure browser for scraping
-    executable_path = {'executable_path': 'chromedriver.exe'}
-    browser = Browser('chrome', **executable_path, headless=False)
 
 # Function to perform the actual scraping
 def scrape():
-    browser = init_browser()
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless=False)
     response = {}
     # Define URL variables
     nasaURL = "https://mars.nasa.gov/news/"
@@ -20,19 +16,186 @@ def scrape():
     marsFactsURL = 'https://space-facts.com/mars/'
 
 
-    ## Scrape NASA Mars news
-    # Launch the browser
-    browser.visit(nasaURL)
+    try:
+        ## Scrape NASA Mars news
+        # Launch the browser
+        browser.visit(nasaURL)
+
         # Pull in browser content to form the soup
-    html = browser.html
-    soup = BeautifulSoup(html, 'html.parser')
-    results = soup.find('div', class_='list_text')
-    titleLevel1 = results.find('div', class_='content_title')
-    news_title = titleLevel1.find('a').text
-    news_p = results.find('div', class_='article_teaser_body').text
-    response.update( {'News Title' : news_title} )
-    response.update( {'News Paragraph' : news_p} )
-    print("Completed")
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+        results = soup.find('div', class_='list_text')
+        titleLevel1 = results.find('div', class_='content_title')
+        news_title = titleLevel1.find('a').text
+        news_p = results.find('div', class_='article_teaser_body').text
+        response.update( {'News Title' : news_title} )
+        response.update( {'News Paragraph' : news_p} )
+    except:
+        print("News title and paragraph failed")
+
+    try:
+        ## Scrape JPL Mars Space Images for the Featured Image
+        # Launch the browser
+        browser.visit(jplURL)
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Narrow the search scope to the container of the featured image
+        results = soup.find('article', class_='carousel_item')
+
+        # Extract the URL of the hero image
+        imageURL = results.find('a')["data-fancybox-href"]
+
+        # Create the full image URL
+        baseURL = 'https://www.jpl.nasa.gov'
+        featured_image_URL = baseURL + imageURL
+
+        # Append results to dictionary
+        response.update( {'Featured Image URL' : featured_image_URL} )
+
+    except:
+        print("Feature image failed")
+
+    try:
+        ## Scrape the Mars Weather Twitter Account
+        # Launch the browser
+        browser.visit(twitterURL)
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Narrow the search scope to the container of the first tweet
+        results = soup.find('div', class_='js-tweet-text-container')
+
+        # Pull out just the tweet's content
+        mars_weather = results.find('p').text
+
+        response.update( {'Mars Weather' : mars_weather} )
+
+    except:
+        print("Twitter weather scraping failed")
 
 
+    try:
+        ## Scrape the Mars Facts site
+        # Launch the browser
+        browser.visit(marsFactsURL)
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+        factTable = soup.find('table')
+        response.update( {'Fact Table' : factTable} )
+
+    except:
+        print("Fact table failed")
+
+
+    try:
+        ## Scrape the USGS Astrogeology site
+        # Declare variables
+        hemisphere_image_urls = []
+
+        # Cerberus Hemisphere
+        # Open the main page
+        browser.visit(astrogeologyURL)
+
+        # Open the link
+        browser.click_link_by_partial_text('Cerberus Hemisphere Enhanced')
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Pull the original image title
+        title = soup.find('h2', class_='title').text
+
+        # Pull the original image URL
+        for i in soup.find_all('a'):
+            target = 'Original'
+            if i.text == target:
+                img_url = i['href']
+
+        # Append result to dictionary
+        dict = {'Title': title, 'Image URL': img_url}
+        hemisphere_image_urls.append(dict)
+
+        # Schiaparelli Hemisphere
+        # Open the main page
+        browser.visit(astrogeologyURL)
+
+        # Open the link
+        browser.click_link_by_partial_text('Schiaparelli Hemisphere Enhanced')
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Pull the original image title
+        title = soup.find('h2', class_='title').text
+
+        # Pull the original image URL
+        for i in soup.find_all('a'):
+            target = 'Original'
+            if i.text == target:
+                img_url = i['href']
+
+        # Append result to dictionary
+        dict = {'Title': title, 'Image URL': img_url}
+        hemisphere_image_urls.append(dict)
+
+        # Syrtis Major Hemisphere
+        # Open the main page
+        browser.visit(astrogeologyURL)
+
+        # Open the link
+        browser.click_link_by_partial_text('Syrtis Major Hemisphere Enhanced')
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Pull the original image title
+        title = soup.find('h2', class_='title').text
+
+        # Pull the original image URL
+        for i in soup.find_all('a'):
+            target = 'Original'
+            if i.text == target:
+                img_url = i['href']
+
+        # Append result to dictionary
+        dict = {'Title': title, 'Image URL': img_url}
+        hemisphere_image_urls.append(dict)
+
+        # Valles Marineris Hemisphere
+        # Open the main page
+        browser.visit(astrogeologyURL)
+
+        # Open the link
+        browser.click_link_by_partial_text('Valles Marineris Hemisphere Enhanced')
+
+        # Pull in browser content to form the soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Pull the original image title
+        title = soup.find('h2', class_='title').text
+
+        # Pull the original image URL
+        for i in soup.find_all('a'):
+            target = 'Original'
+            if i.text == target:
+                img_url = i['href']
+
+        # Append results to dictionary
+        response.update( hemisphere_image_urls )
+    except:
+        print("Hemisphere images failed")
+
+    browser.quit()
+    print(response)
     return response
