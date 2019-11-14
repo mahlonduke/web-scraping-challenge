@@ -15,6 +15,7 @@ def scrape():
     astrogeologyURL = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     marsFactsURL = 'https://space-facts.com/mars/'
 
+    print("Beginning scrape")
 
     try:
         ## Scrape NASA Mars news
@@ -28,8 +29,8 @@ def scrape():
         titleLevel1 = results.find('div', class_='content_title')
         news_title = titleLevel1.find('a').text
         news_p = results.find('div', class_='article_teaser_body').text
-        response.update( {'News Title' : news_title} )
-        response.update( {'News Paragraph' : news_p} )
+        response.update( {'news_title' : news_title} )
+        response.update( {'news_paragraph' : news_p} )
     except:
         print("News title and paragraph failed")
 
@@ -53,7 +54,7 @@ def scrape():
         featured_image_URL = baseURL + imageURL
 
         # Append results to dictionary
-        response.update( {'Featured Image URL' : featured_image_URL} )
+        response.update( {'featured_image_URL' : featured_image_URL} )
 
     except:
         print("Feature image failed")
@@ -73,25 +74,25 @@ def scrape():
         # Pull out just the tweet's content
         mars_weather = results.find('p').text
 
-        response.update( {'Mars Weather' : mars_weather} )
+        response.update( {'mars_weather' : mars_weather} )
 
     except:
         print("Twitter weather scraping failed")
 
 
-    try:
-        ## Scrape the Mars Facts site
-        # Launch the browser
-        browser.visit(marsFactsURL)
-
-        # Pull in browser content to form the soup
-        html = browser.html
-        soup = BeautifulSoup(html, 'html.parser')
-        factTable = soup.find('table')
-        response.update( {'Fact Table' : factTable} )
-
-    except:
-        print("Fact table failed")
+#    try:
+#        ## Scrape the Mars Facts site
+#        # Launch the browser
+#        browser.visit(marsFactsURL)
+#
+#        # Pull in browser content to form the soup
+#        html = browser.html
+#        soup = BeautifulSoup(html, 'html.parser')
+#        factTable = soup.find('table')
+#        response.update( {'fact_table' : factTable} )
+#
+#    except:
+#        print("Fact table failed")
 
 
     try:
@@ -119,9 +120,11 @@ def scrape():
             if i.text == target:
                 img_url = i['href']
 
-        # Append result to dictionary
-        dict = {'Title': title, 'Image URL': img_url}
-        hemisphere_image_urls.append(dict)
+
+        # Add results to response dict
+        response.update( {'hemisphere_title_cerberus' : title} )
+        response.update( {'hemisphere_img_cerberus' : img_url} )
+
 
         # Schiaparelli Hemisphere
         # Open the main page
@@ -143,9 +146,9 @@ def scrape():
             if i.text == target:
                 img_url = i['href']
 
-        # Append result to dictionary
-        dict = {'Title': title, 'Image URL': img_url}
-        hemisphere_image_urls.append(dict)
+        # Add results to response dict
+        response.update( {'hemisphere_title_schiaparelli' : title} )
+        response.update( {'hemisphere_img_schiaparelli' : img_url} )
 
         # Syrtis Major Hemisphere
         # Open the main page
@@ -167,9 +170,9 @@ def scrape():
             if i.text == target:
                 img_url = i['href']
 
-        # Append result to dictionary
-        dict = {'Title': title, 'Image URL': img_url}
-        hemisphere_image_urls.append(dict)
+        # Add results to response dict
+        response.update( {'hemisphere_title_syrtis' : title} )
+        response.update( {'hemisphere_img_syrtis' : img_url} )
 
         # Valles Marineris Hemisphere
         # Open the main page
@@ -191,11 +194,19 @@ def scrape():
             if i.text == target:
                 img_url = i['href']
 
-        # Append results to dictionary
-        response.update( hemisphere_image_urls )
+        # Add results to response dict
+        response.update( {'hemisphere_title_marineris' : title} )
+        response.update( {'hemisphere_img_marineris' : img_url} )
+
+
     except:
         print("Hemisphere images failed")
 
+    # Close the browser
     browser.quit()
+
+    # Print response to console for debugging
     print(response)
+    print("Scrape complete")
+
     return response

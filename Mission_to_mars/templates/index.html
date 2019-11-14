@@ -10,12 +10,56 @@
 </head>
 
 <body>
-  <div class="container text-center">
+  <div class="container text-center" style="background-image: url();">
     <h1 class="jumbotron">Mars Data</h1>
+    <br>
+    <img src = {{marsData.featured_image_URL}}>
+    <br>
     <div>
-      {{response}}
+      <p>
+        <strong>{{marsData.news_title}}</strong>
+        <br>
+        {{marsData.news_paragraph}}
+      </p>
+      <br>
+      <strong>Current weather: </strong>{{marsData.mars_weather}}
+    <br>
+    </div>
+    <br>
+    <strong>Images of Mars' Hemispheres</strong>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title"><a href={{marsData.hemisphere_img_cerberus}}>{{marsData.hemisphere_title_cerberus}}</a></h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title"><a href={{marsData.hemisphere_img_schiaparelli}}>{{marsData.hemisphere_title_schiaparelli}}</a></h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title"><a href={{marsData.hemisphere_img_syrtis}}>{{marsData.hemisphere_title_syrtis}}</a></h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title"><a href={{marsData.hemisphere_img_marineris}}>{{marsData.hemisphere_title_marineris}}</a></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <a href="/scrape"<button type="button" class="btn btn-primary">Scrape New Data</button></a>
     </div>
   </div>
 </body>
-
 </html>

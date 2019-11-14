@@ -15,6 +15,7 @@ def index():
     return render_template("index.html", marsData=marsData)
 
 
+
 @app.route("/scrape")
 def scraper():
     # Might need to change this to the separate data being pulled from the web
